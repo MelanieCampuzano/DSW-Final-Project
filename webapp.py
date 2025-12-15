@@ -58,7 +58,7 @@ def home():
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
 def login():   
-    return github.authorize(callback=url_for('authorized', _external=True, _scheme='https')) #callback URL must match the pre-configured callback URL
+    return github.authorize(callback=url_for('authorized', _external=True, _scheme='http')) #callback URL must match the pre-configured callback URL
 
 @app.route('/logout')
 def logout():
@@ -81,7 +81,7 @@ def authorized():
             session.clear()
             print(inst)
             message = 'Unable to login, please try again.', 'error'
-    return render_template('message.html', message=message)
+    return render_template('home.html', message=message)
 
 
 @app.route('/page1')

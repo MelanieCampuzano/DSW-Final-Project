@@ -11,12 +11,15 @@
   <p>This is a template.</p>
   
   <!--Add button for start (start should link to page1) and login/logout
-  {% if logged_in %}
-	    	<li><span class="navbar-text">Github userid: {{ session['user_data']['login']}}</span></li>
-	    	<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-		{% else %}
-	    	<li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-		{% endif %}
+  
   -->
+  {% if logged_in %}
+	    	<li><span>Github userid: {{ session['user_data']['login']}}</span></li>
+	    	<li><a href="/logout">Logout</a></li>
+			<li><a href="/page1">Start</a></li>
+		{% else %}
+	    	<li><a class="nav-link" href="/login">Login</a></li>
+		{% endif %}
+	<p>{{ message }}</p>
 
 {% endblock %}
