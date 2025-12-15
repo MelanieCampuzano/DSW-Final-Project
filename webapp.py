@@ -86,14 +86,12 @@ def authorized():
 
 @app.route('/page1')
 def renderPage1():
-    if 'user_data' in session:
-        user_data_pprint = pprint.pformat(session['user_data'])#format the user data nicely
-    else:
-        user_data_pprint = '';
-    return render_template('page1.html',dump_user_data=user_data_pprint)
+    #put python code for gameplay here
+    return render_template('page1.html')
 
 @app.route('/page2')
 def renderPage2():
+    #put python code for score page here, should include who won this round and the leaderboard, will get leaderboard info from MongoDB
     return render_template('page2.html')
 
 #the tokengetter is automatically called to check who is logged in.
