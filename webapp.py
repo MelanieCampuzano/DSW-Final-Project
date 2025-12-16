@@ -76,12 +76,12 @@ def authorized():
         try:
             session['github_token'] = (resp['access_token'], '') #save the token to prove that the user logged in
             session['user_data']=github.get('user').data
-            message = 'You were successfully logged in as ' + session['user_data']['login'] + '.'
+            flash('You were successfully logged in as ' + session['user_data']['login'] + '.')
         except Exception as inst:
             session.clear()
             print(inst)
-            message = 'Unable to login, please try again.', 'error'
-    return render_template('home.html', message=message)
+            flash('Unable to login, please try again.', 'error')
+    return redirect("/")
 
 
 @app.route('/page1')
