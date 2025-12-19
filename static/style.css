@@ -1,14 +1,14 @@
-.flexContainer {
+#flexContainer {
 	display: flex;
 	justify-content: center;
 }
-.player1 {
+#player1 {
     background: red;
     width: 1vw;
 	height: 15vh;
     position: relative;
         }
-.player2 {
+#player2 {
 	background: blue;
 	width: 1vw;
 	height: 15vh;
