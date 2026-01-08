@@ -1,45 +1,120 @@
 $(document).ready(function(){
-	$(document).keydown(function(e) {
-		//console.log(e.which);
-		const player1 = document.querySelector("#player1");
-		const player2 = document.querySelector("#player2");
-		const canvasContainer = document.querySelector("#canvasContainer");
-		//console.log($("#player2").length); // Should be 1
-		//console.log(player2, canvasContainer);
-		if (e.which === 38) { // up arrow key
-			if (player2.offsetTop >= canvasContainer.offsetTop) {
-				$("#player2").finish().animate({
-					top: "-=5"
-				});
+	const container = document.getElementById('canvasContainer');
+	const canvas = document.getElementById('pongGameCanvas');
+	const ctx = canvas.getContext("2d");
+	let interval = 0;
+	//for ball
+	let x = canvas.width / 2; //initial x position of ball
+	let y = canvas.height / 2; //initial y position of the ball
+	let dx = 1; //change in x per frame
+	let dy = 1; //change in y per frame
+	const ballRadius = 10;
+	//for paddle
+	const paddleHeight = 75;
+	const paddleWidth = 10;
+	let paddleRightY = 0;
+	let paddleLeftY = 0;
+	let upPressed = false;
+	let downPressed = false;
+	let WPressed = false;
+	let SPressed = false;
+	
+	function drawBall() {
+		ctx.beginPath();
+		ctx.arc(x, y, ballRadius, 0, 360);
+		ctx.fillStyle = "white";
+		ctx.fill();
+	}
+	function drawRightPaddle() {
+		ctx.beginPath();
+		ctx.rect(0, paddleRightY, paddleWidth, paddleHeight);
+		ctx.fillStyle = "#0095DD";
+		ctx.fill();
+		ctx.closePath();
+	}
+	function drawLeftPaddle() {
+		ctx.beginPath();
+		ctx.rect(canvas.width-paddleWidth, paddleLeftY, paddleWidth, paddleHeight);
+		ctx.fillStyle = "#de0a07";
+		ctx.fill();
+		ctx.closePath();
+	}
+	
+	function draw() { //should redraw the canvas every frame with updated x and y for the ball
+		ctx.clearRect(0, 0, canvas.width, canvas.height);//clear the canvas
+		ctx.fillStyle = "black";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);// redraw the background
+		drawBall()//draw the ball in its new position
+		drawRightPaddle()//draw paddles in new position
+		drawLeftPaddle()
+		x += dx;
+		y += dy;
+		//ball hit off left and right walls
+		if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+			if ((y > paddleRightY && y < paddleRightY + paddleHeight) || (y > paddleLeftY && y < paddleLeftY + paddleHeight)) { //if the ball hit the paddle
+				dx = -dx;
+			} else { //if it didnt hit the paddle
+			alert("GAME OVER");
+			document.location.reload();
+			clearInterval(interval);
 			}
 		}
-		if (e.which == '87') { //w
-			if (player1.offsetTop >= canvasContainer.offsetTop) {
-				$("#player1").finish().animate({
-					top: "-=5"
-				});
-			}
-        }
-		if (e.which == '40') { //down arrow key
-			if (player2.offsetTop + player2.offsetHeight <= canvasContainer.offsetTop + canvasContainer.offsetHeight) {
-				$("#player2").finish().animate({
-					top: "+=5"
-				});
-			}
-        }
-		if (e.which == '83') { //s
-			if (player1.offsetTop + player1.offsetHeight <= canvasContainer.offsetTop + canvasContainer.offsetHeight) {
-				$("#player1").finish().animate({
-					top: "+=5"
-				});
-			}
-        }
-    });
-	function resizeCanvas() {
-		const container = document.getElementById('canvasContainer');
-		const canvas = document.getElementById('pongGameCanvas');
-		const ctx = canvas.getContext("2d");
+		//ball hit top and bottom walls
+		if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+		  dy = -dy;
+		}
+		//move paddle with input
+		if (upPressed) {
+			paddleLeftY = Math.max(paddleLeftY - 7, 0);
+		} else if (downPressed) {
+			paddleLeftY = Math.min(paddleLeftY + 7, canvas.height-paddleHeight);
+		}
+		if (WPressed) {
+			paddleRightY = Math.max(paddleRightY - 7, 0);
+		} else if (SPressed) {
+			paddleRightY = Math.min(paddleRightY + 7, canvas.height-paddleHeight);
+		}
+	}
+	function startGame() {
+		interval = setInterval(draw, 10);
+		document.addEventListener("keydown", keyDownHandler);
+		document.addEventListener("keyup", keyUpHandler);
+	}
+	
+	function keyDownHandler(e) {
+		if (e.key === "Up" || e.key === "ArrowUp") {
+			upPressed = true;
+		} else if (e.key === "Down" || e.key === "ArrowDown") {
+			downPressed = true;
+		}
+		if (e.key === "w") {
+			WPressed = true;
+		} else if (e.key === "s") {
+			SPressed = true;
+		}
+	}
 
+	function keyUpHandler(e) {
+		if (e.key === "Up" || e.key === "ArrowUp") {
+			upPressed = false;
+		} else if (e.key === "Down" || e.key === "ArrowDown") {
+			downPressed = false;
+		}
+		if (e.key === "w") {
+			WPressed = false;
+		} else if (e.key === "s") {
+			SPressed = false;
+		}
+	}
+	
+	const runButton = 
+	document.getElementById("runButton");
+	runButton.addEventListener("click", () => {
+		startGame();
+		runButton.disabled = true;
+	});
+	
+	function resizeCanvas() {
 		// Get the computed size of the parent div
 		const containerWidth = container.offsetWidth;
 		const containerHeight = container.offsetHeight;
@@ -51,7 +126,7 @@ $(document).ready(function(){
 		// You must also reposition or redraw your content here after resizing
 		ctx.fillStyle = "black";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		drawBall(100, 100)
+		drawBall()
 	}
 
 	// Call the function initially to set the size on page load
@@ -59,13 +134,4 @@ $(document).ready(function(){
 
 	// Add an event listener to resize the canvas when the window size changes
 	window.addEventListener('resize', resizeCanvas);
-	
-	function drawBall(x, y) {
-		const canvas = document.getElementById('pongGameCanvas');
-		const ctx = canvas.getContext("2d");
-		ctx.beginPath();
-		ctx.arc(x, y, 10, 0, 360);
-		ctx.fillStyle = "white";
-		ctx.fill();
-	}
 });
