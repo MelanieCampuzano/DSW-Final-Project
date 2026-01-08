@@ -2,6 +2,7 @@ $(document).ready(function(){
 	const container = document.getElementById('canvasContainer');
 	const canvas = document.getElementById('pongGameCanvas');
 	const ctx = canvas.getContext("2d");
+	let interval = 0;
 	//for ball
 	let x = canvas.width / 2; //initial x position of ball
 	let y = canvas.height / 2; //initial y position of the ball
@@ -11,7 +12,6 @@ $(document).ready(function(){
 	//for paddle
 	const paddleHeight = 75;
 	const paddleWidth = 10;
-	//let paddleX = 0;
 	let paddleRightY = 0;
 	let paddleLeftY = 0;
 	let upPressed = false;
@@ -49,10 +49,17 @@ $(document).ready(function(){
 		drawLeftPaddle()
 		x += dx;
 		y += dy;
-		//ball bounce off walls
+		//ball hit off left and right walls
 		if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-		  dx = -dx;
+			if ((y > paddleRightY && y < paddleRightY + paddleHeight) || (y > paddleLeftY && y < paddleLeftY + paddleHeight)) { //if the ball hit the paddle
+				dx = -dx;
+			} else { //if it didnt hit the paddle
+			alert("GAME OVER");
+			document.location.reload();
+			clearInterval(interval);
+			}
 		}
+		//ball hit top and bottom walls
 		if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
 		  dy = -dy;
 		}
@@ -69,7 +76,7 @@ $(document).ready(function(){
 		}
 	}
 	function startGame() {
-		setInterval(draw, 10);
+		interval = setInterval(draw, 10);
 		document.addEventListener("keydown", keyDownHandler);
 		document.addEventListener("keyup", keyUpHandler);
 	}
