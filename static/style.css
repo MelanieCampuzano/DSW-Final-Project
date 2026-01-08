@@ -2,18 +2,7 @@
 	display: flex;
 	justify-content: center;
 }
-#player1 {
-    background: red;
-    width: 1vw;
-	height: 15vh;
-    position: relative;
-        }
-#player2 {
-	background: blue;
-	width: 1vw;
-	height: 15vh;
-	position: relative;
-}
+
 #canvasContainer {
 	width: 80vw;
 	height: 60vh;
