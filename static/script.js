@@ -1,13 +1,23 @@
 $(document).ready(function(){
+	function getRandomInt(min, max) { //exclude zero because this will only be used to determine the ball trajectory
+		const minCeiled = Math.ceil(min);
+		const maxFloored = Math.floor(max);
+		n = Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
+		if (n == 0) n++;
+		return n;
+	}
 	const container = document.getElementById('canvasContainer');
 	const canvas = document.getElementById('pongGameCanvas');
 	const ctx = canvas.getContext("2d");
+	// Get the computed size of the parent div
+	const containerWidth = container.offsetWidth;
+	const containerHeight = container.offsetHeight;
 	let interval = 0;
 	//for ball
-	let x = canvas.width / 2; //initial x position of ball
-	let y = canvas.height / 2; //initial y position of the ball
-	let dx = 1; //change in x per frame
-	let dy = 1; //change in y per frame
+	let x = containerWidth / 2; //initial x position of ball
+	let y = containerHeight / 2; //initial y position of the ball
+	let dx = getRandomInt(-3, 3); //change in x per frame
+	let dy = getRandomInt(-3, 3); //change in y per frame
 	const ballRadius = 10;
 	//for paddle
 	const paddleHeight = 75;
@@ -18,10 +28,14 @@ $(document).ready(function(){
 	let downPressed = false;
 	let WPressed = false;
 	let SPressed = false;
+	//for score
+	let player1Score = 0;
+	let player2Score = 0;
+	winner = "";
 	
 	function drawBall() {
 		ctx.beginPath();
-		ctx.arc(x, y, ballRadius, 0, 360);
+		ctx.arc(x, y, ballRadius, 0, 2 * Math.PI);
 		ctx.fillStyle = "white";
 		ctx.fill();
 	}
@@ -39,25 +53,41 @@ $(document).ready(function(){
 		ctx.fill();
 		ctx.closePath();
 	}
+	function drawScore() {
+		ctx.font = "30px Arial";
+		ctx.fillStyle = "white";
+		ctx.fillText(`Player 1: ${player1Score} Player 2: ${player2Score}`, containerWidth / 2 -100, 30);
+	}
 	
 	function draw() { //should redraw the canvas every frame with updated x and y for the ball
 		ctx.clearRect(0, 0, canvas.width, canvas.height);//clear the canvas
 		ctx.fillStyle = "black";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);// redraw the background
-		drawBall()//draw the ball in its new position
-		drawRightPaddle()//draw paddles in new position
-		drawLeftPaddle()
+		drawBall();//draw the ball in its new position
+		drawRightPaddle();//draw paddles in new position
+		drawLeftPaddle();
+		drawScore();
 		x += dx;
 		y += dy;
 		//ball hit off left and right walls
 		if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
 			if ((y > paddleRightY && y < paddleRightY + paddleHeight) || (y > paddleLeftY && y < paddleLeftY + paddleHeight)) { //if the ball hit the paddle
-				dx = -dx;
+				dx = getRandomInt(-3, 3);
+				dy = getRandomInt(-3, 3);
 			} else { //if it didnt hit the paddle
-			alert("GAME OVER");
-			document.location.reload();
-			clearInterval(interval);
+				if (x + dx > canvas.width - ballRadius) { //if it hit the right wall
+					player1Score++;
+					dx = -dx;
+				} else if (x + dx < ballRadius) { //if it hit the left wall
+					player2Score++;
+					dx = -dx;
+				}
 			}
+		}
+		//end of game
+		if (player1Score >= 1 || player2Score >= 1) {
+			console.log("winner function = ", winnerFunction())
+			endGame();
 		}
 		//ball hit top and bottom walls
 		if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
@@ -79,6 +109,28 @@ $(document).ready(function(){
 		interval = setInterval(draw, 10);
 		document.addEventListener("keydown", keyDownHandler);
 		document.addEventListener("keyup", keyUpHandler);
+	}
+	function winnerFunction() {
+		winner = "";
+		if (player1Score >= 1) {
+			winner = "Player 1";
+		}
+		if (player2Score >= 1) {
+			winner = "Player 2";
+		}
+		return winner;
+	}
+	function endGame() {
+		clearInterval(interval);
+		winnerFunction();
+		ctx.fillStyle = "gray";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 8;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "black";
+		ctx.font = "100px Arial";
+		console.log("winner = ", winner);
+		ctx.fillText(`The winner is ${winner}`, 10, containerHeight / 2)//ended here
 	}
 	
 	function keyDownHandler(e) {
