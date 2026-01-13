@@ -109,6 +109,12 @@ $(document).ready(function(){
 		interval = setInterval(draw, 10);
 		document.addEventListener("keydown", keyDownHandler);
 		document.addEventListener("keyup", keyUpHandler);
+		player1Score = 0;
+		player2Score = 0;
+		x = containerWidth / 2; 
+		y = containerHeight / 2; 
+		dx = getRandomInt(-3, 3);
+		dy = getRandomInt(-3, 3);
 	}
 	function winnerFunction() {
 		winner = "";
@@ -130,7 +136,7 @@ $(document).ready(function(){
 		ctx.fillStyle = "black";
 		ctx.font = "100px Arial";
 		console.log("winner = ", winner);
-		ctx.fillText(`The winner is ${winner}`, 10, containerHeight / 2)//ended here
+		ctx.fillText(`The winner is ${winner}`, 10, containerHeight / 2)
 	}
 	
 	function keyDownHandler(e) {
@@ -163,7 +169,7 @@ $(document).ready(function(){
 	document.getElementById("runButton");
 	runButton.addEventListener("click", () => {
 		startGame();
-		runButton.disabled = true;
+		//runButton.disabled = true;
 	});
 	
 	function resizeCanvas() {
