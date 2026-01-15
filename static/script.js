@@ -36,9 +36,17 @@ $(document).ready(function(){
         }
     });
 	function resizeCanvas() {
-		const container = document.getElementById('canvasContainer');
 		const canvas = document.getElementById('pongGameCanvas');
-		const ctx = canvas.getContext("2d");
+		if (!canvas) {
+			console.warn('Canvas element not found - check ID or DOM rediness');
+		}
+		const ctx = canvas.getContext('2d');
+		if (!ctx) {
+			console.error('Failed to get 2D context');
+			return;
+		}
+		const container = document.getElementById('canvasContainer');
+
 
 		// Get the computed size of the parent div
 		const containerWidth = container.offsetWidth;
@@ -55,7 +63,11 @@ $(document).ready(function(){
 	}
 
 	// Call the function initially to set the size on page load
-	resizeCanvas();
+	$(document).ready(function() {
+		resizeCanvas();
+	});
+	
+	$(window).on('resize', resizeCanvas);
 
 	// Add an event listener to resize the canvas when the window size changes
 	window.addEventListener('resize', resizeCanvas);
@@ -67,5 +79,12 @@ $(document).ready(function(){
 		ctx.arc(x, y, 10, 0, 360);
 		ctx.fillStyle = "white";
 		ctx.fill();
+	}
+	
+	function startscreen() {
+		
+		const containerWidth = container.offsetWidth;
+		const containerHeight = container.offsetHeight;
+		
 	}
 });

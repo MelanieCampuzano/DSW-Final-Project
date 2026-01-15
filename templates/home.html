@@ -6,19 +6,23 @@
 
 {% block content %}
 
-  <h1>Home</h1>
-
-  <p>This is a template.</p>
   
   <!--Add button for start (start should link to page1) and login/logout
   
   -->
   {% if logged_in %}
-	    	<li><span>Github userid: {{ session['user_data']['login']}}</span></li>
-	    	<li><a href="/logout">Logout</a></li>
-			<li><a href="/page1">Start</a></li>
+			
+			<div class="homescreenContainer">
+				<div class="centered-box">
+					<li class="item1"><span id="github-name">Github userid: {{ session['user_data']['login']}}</span></li>
+					<h1 class="item2"> Pong game</h1>
+					<div class="item4"><li class="buttons"><a class="link-decor" href="/logout">Logout</a></li></div>
+					<div class="item3"><li class="buttons"><a class="link-decor" href="/page1">Start</a></li></div>
+					<div class="item5"><li class="buttons" ><a class="link-decor" href="/page2">Stats</a></li></div>
+				</div>
+			</div>
 		{% else %}
-	    	<li><a class="nav-link" href="/login">Login</a></li>
+	    	<li class="buttons"><a class="nav-link" href="/login">Login</a></li>
 		{% endif %}
 	<p>{{ message }}</p>
 
