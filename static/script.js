@@ -37,6 +37,7 @@ $(document).ready(function(){
 	let player1Score = 0;
 	let player2Score = 0;
 	winner = "";
+	let gameActive = false;
 	
 	function drawBall() {
 		ctx.beginPath();
@@ -58,11 +59,11 @@ $(document).ready(function(){
 		ctx.fill();
 		ctx.closePath();
 	}
-	function drawScore() {
-		ctx.font = "30px Arial";
-		ctx.fillStyle = "white";
-		ctx.fillText(`Player 1: ${player1Score} Player 2: ${player2Score}`, containerWidth / 2 -100, 30);
-	}
+	//function drawScore() {
+	//	ctx.font = "30px Arial";
+	//	ctx.fillStyle = "white";
+	//	ctx.fillText(`Player 1: ${player1Score} Player 2: ${player2Score}`, containerWidth / 2 -100, 30);
+	//}
 	
 	function draw() { //should redraw the canvas every frame with updated x and y for the ball
 		ctx.clearRect(0, 0, canvas.width, canvas.height);//clear the canvas
@@ -71,22 +72,24 @@ $(document).ready(function(){
 		drawBall();//draw the ball in its new position
 		drawRightPaddle();//draw paddles in new position
 		drawLeftPaddle();
-		drawScore();
+		//drawScore();
 		winnerFunction();
-		x += dx;
-		y += dy;
-		//ball hit off left and right walls
-		if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-			if ((y > paddleRightY && y < paddleRightY + paddleHeight) || (y > paddleLeftY && y < paddleLeftY + paddleHeight)) { //if the ball hit the paddle
-				dx = getRandomInt(-3, 3);
-				dy = getRandomInt(-3, 3);
-			} else { //if it didnt hit the paddle
-				if (x + dx > canvas.width - ballRadius) { //if it hit the right wall
-					player1Score++;
-					dx = -dx;
-				} else if (x + dx < ballRadius) { //if it hit the left wall
-					player2Score++;
-					dx = -dx;
+		if (gameActive == true) {
+			x += dx;
+			y += dy;
+			//ball hit off left and right walls
+			if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+				if ((y > paddleRightY && y < paddleRightY + paddleHeight) || (y > paddleLeftY && y < paddleLeftY + paddleHeight)) { //if the ball hit the paddle
+					dx = getRandomInt(-3, 3);
+					dy = getRandomInt(-3, 3);
+				} else { //if it didnt hit the paddle
+					if (x + dx > canvas.width - ballRadius) { //if it hit the right wall
+						player1Score++;
+						dx = -dx;
+					} else if (x + dx < ballRadius) { //if it hit the left wall
+						player2Score++;
+						dx = -dx;
+					}
 				}
 			}
 		}
@@ -132,6 +135,7 @@ $(document).ready(function(){
 		y = containerHeight / 2; 
 		dx = getRandomInt(-3, 3);
 		dy = getRandomInt(-3, 3);
+		gameActive = true;
 	}
 	function winnerFunction() {
 		winner = "";
@@ -150,10 +154,12 @@ $(document).ready(function(){
 		ctx.strokeStyle = "black";
 		ctx.lineWidth = 8;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		let fontSize = canvas.width * 0.05;
 		ctx.fillStyle = "black";
-		ctx.font = "100px Arial";
+		ctx.font = `${fontSize}px Arial`;
 		console.log("winner = ", winner);
 		ctx.fillText(`The winner is ${winner}`, 10, containerHeight / 2)
+		gameActive = false;
 	}
 	
 	function keyDownHandler(e) {

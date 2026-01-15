@@ -2,16 +2,23 @@
 
 {% set active_page = "page2" %}
 
-{% block title %}page2{% endblock %}
+{% block title %}Stats{% endblock %}
 
 {% block content %}
 
-	<h1>This is Page 2</h1>
+	<h1>Your Statistics</h1>
 
 	<!--This will be the end page where we display who won this round as well as the leaderboard-->
 	<div id="winLoss">
 		<p>You have won {{ numWin }} time(s)</p>
 		<p>You have lost {{ numLoss }} time(s)</p>
 	</div>
+
+	<a href="/">
+	<button>Home</button>
+	</a>
+	<a href="/page1">
+	<button>Game</button>
+	</a>
 
 {% endblock %}
