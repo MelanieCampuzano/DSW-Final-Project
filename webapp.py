@@ -103,11 +103,15 @@ def renderPage1():
 @app.route('/page2')
 def renderPage2():
     #put python code for score page here, the leaderboard, will get leaderboard info from MongoDB
-    #need a way to put the number of times player 1 has won on this account into mongodb
-    #playerWins = ""
-    #then for doc in collection.find({"username" : session['user_data']['login']}):
-    #   playerWins = doc["wins"]
-    return render_template('page2.html')
+    playerWins = 0
+    playerLosses = 0
+    for doc in collection.find({"user" : session['user_data']['login'], "win" : True}): #for every time player 1 has won
+        playerWins = playerWins + 1
+    for doc in collection.find({"user" : session['user_data']['login'], "win" : False}): #for every time player 1 has lost
+        playerLosses = playerLosses + 1
+    print("Losses: ", playerLosses)
+    print("Wins: ", playerWins)
+    return render_template('page2.html', numWin = str(playerWins), numLoss = str(playerLosses))
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter

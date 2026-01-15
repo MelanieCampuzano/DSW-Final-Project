@@ -8,6 +8,11 @@ $(document).ready(function(){
 	}
 	const container = document.getElementById('canvasContainer');
 	const canvas = document.getElementById('pongGameCanvas');
+	//console.log("the canvas is ", canvas);
+	if (!canvas || !container) {
+    console.log('Game canvas not found on this page');
+    return; // Exit early if no canvas
+	}
 	const ctx = canvas.getContext("2d");
 	// Get the computed size of the parent div
 	const containerWidth = container.offsetWidth;
