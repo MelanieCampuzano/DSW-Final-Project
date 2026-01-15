@@ -67,6 +67,7 @@ $(document).ready(function(){
 		drawRightPaddle();//draw paddles in new position
 		drawLeftPaddle();
 		drawScore();
+		winnerFunction();
 		x += dx;
 		y += dy;
 		//ball hit off left and right walls
@@ -87,7 +88,18 @@ $(document).ready(function(){
 		//end of game
 		if (player1Score >= 1 || player2Score >= 1) {
 			console.log("winner function = ", winnerFunction())
-			endGame();
+			endOfGame();
+			if (player1Score >=1) {
+				$.post('/gameOver', 
+				{
+					win: true
+				});
+			} else {
+				$.post('/gameOver', 
+				{
+					win: false
+				});
+			}
 		}
 		//ball hit top and bottom walls
 		if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
@@ -126,7 +138,7 @@ $(document).ready(function(){
 		}
 		return winner;
 	}
-	function endGame() {
+	function endOfGame() {
 		clearInterval(interval);
 		winnerFunction();
 		ctx.fillStyle = "gray";

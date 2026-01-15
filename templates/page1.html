@@ -5,14 +5,17 @@
 {% block title %}page1{% endblock %}
 
 {% block content %}
-  <h1>This is Page 1</h1>
+	<h1>This is Page 1</h1>
 
-  <!--This will be the gameplay page-->
+	<!--This will be the gameplay page-->
 	<div id="flexContainer">
 		<div id="canvasContainer">
 			<canvas id="pongGameCanvas"></canvas>
 		</div>
 	</div>
-  <button id="runButton">Start Game</button>
+	<button id="runButton">Start Game</button>
+	<a href="/page2">
+		<button id="leaderboardButton">Leaderboard</button>
+	</a>
 
 {% endblock %}

@@ -35,7 +35,7 @@ github = oauth.remote_app(
 url = os.environ["MONGO_CONNECTION_STRING"]
 client = pymongo.MongoClient(url)
 db = client[os.environ["MONGO_DBNAME"]]
-collection = db['posts'] #TODO: put the name of the collection here
+collection = db['Pong']
 
 # Send a ping to confirm a successful connection
 try:
@@ -83,6 +83,17 @@ def authorized():
             flash('Unable to login, please try again.', 'error')
     return redirect("/")
 
+@app.route('/gameOver', methods=["GET", "POST"])
+def dataToDatabase():
+    winString = request.form.get('win')
+    if winString is None:
+        return "Missing win field", 400
+    #else: 
+    winBoolean = winString.lower() == "true"
+    user = session['user_data']['login']
+    doc = {"user" : user, "win" : winBoolean}
+    collection.insert_one(doc)
+    return "OK", 200
 
 @app.route('/page1')
 def renderPage1():
@@ -91,7 +102,11 @@ def renderPage1():
 
 @app.route('/page2')
 def renderPage2():
-    #put python code for score page here, should include who won this round and the leaderboard, will get leaderboard info from MongoDB
+    #put python code for score page here, the leaderboard, will get leaderboard info from MongoDB
+    #need a way to put the number of times player 1 has won on this account into mongodb
+    #playerWins = ""
+    #then for doc in collection.find({"username" : session['user_data']['login']}):
+    #   playerWins = doc["wins"]
     return render_template('page2.html')
 
 #the tokengetter is automatically called to check who is logged in.
